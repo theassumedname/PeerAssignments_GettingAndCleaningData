@@ -1,46 +1,20 @@
-#read raw data to variables
-subject.test<-read.table("./UCI HAR Dataset/test/subject_test.txt")
-x.test<-read.table("./UCI HAR Dataset/test/X_test.txt")
-y.test<-read.table("./UCI HAR Dataset/test/y_test.txt")
+# Getting and Cleaning Data Course Project
 
-subject.train<-read.table("./UCI HAR Dataset/train/subject_train.txt")
-x.train<-read.table("./UCI HAR Dataset/train/X_train.txt")
-y.train<-read.table("./UCI HAR Dataset/train/y_train.txt")
+This project contains one R script, `run_analysis.R`, which will calculate means per activity, per subject of the mean and Standard deviation of the Human Activity Recognition Using Smartphones Dataset Version 1.0 [1]. This dataset should be [downloaded](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip) and extracted directly into the data directory.
 
-feature<-read.table("./UCI HAR Dataset/features.txt")
-activity<-read.table("./UCI HAR Dataset/activity_labels.txt")
+Once executed, the resulting dataset maybe found at `./data/tidy_data.txt`
 
-#merge datasets
-X<- rbind(x.test,x.train)
-y<- rbind(y.test,y.train)
-subject<-rbind(subject.test,subject.train)
+For futher details, refer to [CookBook.md](CookBook.md)
 
-#give column names
-colnames(X)<-feature[,2]
-colnames(y)<-"lable"
-colnames(subject)<-"subject"
+## References
 
-#replace lable names
-y<-merge(y,activity,by=1)[,2]
+[1] Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
+<activityrecognition@smartlab.ws>
 
-#merge a complete dataset
-data<-cbind(subject,y,X)
+## Required R Packages
 
-#subset the data
-search<-grep("-mean | -std",colnames(data))
-data.sub<-data[,c(1,2,search)]
+The R package `reshape2` is required to run this script. This maybe installed with,
 
-#generate data.mean
-data.melt<-melt(data.sub,id.var=c("subject","label"))
-data.mean<-dcast(data.melt,subject+label~variable,mean)
-
-write.table(data.mean,file="tidy_data.txt")
-
-
-
-
-
-
-
-
-
+```{r}
+install.package("reshape2")
+```
